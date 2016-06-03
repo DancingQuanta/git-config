@@ -1,0 +1,6 @@
+*
+!/.gitconfig
+!/.gitattributes
+!/.gitignore
+!/.gitignore.d/
+!/.gitignore.d/git
