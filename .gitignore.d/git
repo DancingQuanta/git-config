@@ -1,4 +1,6 @@
 *
+!/bin/
+!/bin/default-difftool
 !/.gitconfig
 !/.gitattributes
 !/.gitignore

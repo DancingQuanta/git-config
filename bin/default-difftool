@@ -1,0 +1,62 @@
+#!/usr/bin/sh
+# ****************************************************
+#
+#   default-difftool
+#
+#   Default Diff and Merge tools depending on OS
+#
+# ----------------------------------------------------
+#   Dependencies
+# ----------------------------------------------------
+#
+#   cygwinify (if running cygwin)
+#
+# ----------------------------------------------------
+#   Usage
+# ----------------------------------------------------
+#
+#   Diff mode: 'default-difftool.sh $LOCAL $REMOTE'
+#   Merge mode: 'default-difftool.sh $BASE $LOCAL $REMOTE $MERGED'
+#
+# ****************************************************
+
+# Error handling
+
+set -o errexit
+set -o nounset
+set -o pipefail
+
+# ----------------------------------------------------
+#   Variables
+# ----------------------------------------------------
+
+# Cygwinity
+CYGWINIFY="$HOME/bin/cygwinify"
+
+# KDiff3 installed in windows and used in cygwin
+CYG_KDIFF="/cygdrive/c/apps/KDiff3/kdiff3.exe"
+
+# ----------------------------------------------------
+#   Main
+# ----------------------------------------------------
+
+# Check the OSTYPE
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+  echo "Please edit this file to include difftools for Linux"
+elif [[ "$OSTYPE" == "darwin"* ]]; then
+  echo "Please edit this file to include difftools for Mac"
+elif [[ "$OSTYPE" == "cygwin" ]]; then
+  # Must have cygwinify in bin
+  if [[ -a $CYGWINIFY ]]; then
+    if [[ -a $CYG_KDIFF ]]; then
+      ARG=
+      $CYG_KDIFF $(eval $CYGWINIFY "$@")  # Can be used by both diff and merge
+    else
+      echo "No difftool installed in Windows"
+    fi
+  else
+    echo "$CYGWINIFY does not exist"
+  fi
+else
+  echo "Could not recognise the OS"
+fi

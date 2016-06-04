@@ -125,9 +125,8 @@
 	dh	= diff --color --color-words --abbrev HEAD		# Diff working dir and index to HEAD
 	
 	xd = difftool -t default-difftool
-	kdiff = difftool -t kdiff3
-	kdiffs = difftool -t kdiff3 --staged
-	kdiffh = difftool -t kdiff3 HEAD
+	xds = difftool -t default-difftool --staged
+	xdh = difftool -t default-difftool HEAD
 	
 	# index
 	s  = status -s
