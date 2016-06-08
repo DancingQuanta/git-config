@@ -130,9 +130,8 @@
 	
 	# index
 	s  = status -s
-	a  = add
+	a  ="!git add $@ && git status -s"
 	ap = add -p
-	ia = add
 	ir = reset
 
 	# log
