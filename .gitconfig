@@ -116,7 +116,9 @@
 	rename = commit --amend --verbose
 	join = commit --amend -C HEAD
 	joina = commit -a --amend -C HEAD
-	cundo  = reset --soft "HEAD^" # Undo your last commit, but don't throw away your changes
+	undo  = reset --soft "HEAD^" # Undo your last commit, but don't throw away your changes
+	undoh  = reset --hard "HEAD^" # Undo your last commit, and throw away your changes
+	refresh = reset --hard HEAD # Throw away any changes
 	cp	 = cherry-pick
 
 	# diff
@@ -146,7 +148,13 @@
 
 	lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
 	lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''		  %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
-
+	
+	# stash
+    ss = stash                        # stash changes
+    sl = stash list                   # list stashes
+    sa = stash apply                  # apply stash (restore changes)
+    sd = stash drop                   # drop stashes (destory changes)
+	
 	# remote
 	re  = remote
 	rel = remote --verbose
@@ -154,8 +162,11 @@
 	rex = remote rm
 	rem = remote rename
 
+	find = "!git log --reverse --color -p -S "
+	
 	# list aliases
 	aliases = "!git config -l | grep alias | cut -c 7-"
+	
 		
 [push]
 	default = matching
