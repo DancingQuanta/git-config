@@ -1,8 +1,10 @@
 *
+!/.gitattributes
+!/.gitconfig
+!/.gitignore
+!/.gitignore.d/git
 !/bin/
 !/bin/default-difftool
-!/.gitconfig
-!/.gitattributes
-!/.gitignore
-!/.gitignore.d/
-!/.gitignore.d/git
+!/bin/git-chemail
+!/bin/git-chname
+!/bin/git-truncate
