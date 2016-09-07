@@ -48,20 +48,20 @@
 	whitespace = fix,-indent-with-non-tab,trailing-space,cr-at-eol
 
 [diff]
-	tool = default-difftool
+	tool = difftool
 
-[difftool "default-difftool"]
-	cmd = ~/bin/default-difftool $LOCAL $REMOTE
+[difftool "difftool"]
+	cmd = ~/bin/difftool $LOCAL $REMOTE
 	trustExitCode = false
 	
 [difftool]
 	prompt = false
 
 [merge]
-	tool = default-difftool
+	tool = difftool
 
-[mergetool "default-difftool"]
-	cmd = ~/bin/default-difftool $BASE $LOCAL $REMOTE $MERGED
+[mergetool "difftool"]
+	cmd = ~/bin/difftool $BASE $LOCAL $REMOTE $MERGED
 	keepBackup = false
 	trustExitCode = false
 	
@@ -126,9 +126,9 @@
 	ds	= diff --color --color-words --abbrev --staged	# Diff index to HEAD
 	dh	= diff --color --color-words --abbrev HEAD		# Diff working dir and index to HEAD
 	
-	xd = difftool -t default-difftool
-	xds = difftool -t default-difftool --staged
-	xdh = difftool -t default-difftool HEAD
+	xd = difftool -t difftool
+	xds = difftool -t difftool --staged
+	xdh = difftool -t difftool HEAD
 	
 	# index
 	s  = status -s
@@ -154,7 +154,15 @@
     sl = stash list                   # list stashes
     sa = stash apply                  # apply stash (restore changes)
     sd = stash drop                   # drop stashes (destory changes)
-	
+
+  # subtree
+  # the acronym stands for "subtree add"
+  # git sba <repo uri> <dest folder> 
+  sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
+  # the acronym stands for "subtree update"
+  # git sbu <repo uri> <dest folder> 
+  sbu = "!f() { git subtree pull --prefix $2 $1 master --squash; }; f"
+
 	# remote
 	re  = remote
 	rel = remote --verbose
@@ -163,7 +171,9 @@
 	rem = remote rename
 
 	find = "!git log --reverse --color -p -S "
-	
+
+  whenadded = log --diff-filter=A
+
 	# list aliases
 	aliases = "!git config -l | grep alias | cut -c 7-"
 	
