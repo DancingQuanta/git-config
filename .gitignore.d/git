@@ -4,7 +4,7 @@
 !/.gitignore
 !/.gitignore.d/git
 !/bin/
-!/bin/default-difftool
+!/bin/difftool
 !/bin/git-chemail
 !/bin/git-chname
 !/bin/git-truncate
