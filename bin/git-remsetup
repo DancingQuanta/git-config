@@ -1,0 +1,207 @@
+#!/bin/sh
+# Based on https://github.com/s0rbus/git-utils/blob/master/remgit
+# Creates a remote git repository from the current local directory on a server or locally
+
+#Defaults for options
+DRYRUN=false
+SSH=false
+LOCAL=false
+AREPO=false
+
+# SSH Configuration
+# Replace USER, HOST, PORT, GIT_PATH with your details or use an SSH aliases
+# Can be over-ridden using commandline options
+ALIAS=''
+USER=''
+HOST=''
+PORT=''
+SSHCMD=''
+SSHURL=''
+
+# Set the path to where to create remote bare git repos on 'remote'
+GIT_PATH='git'
+HOME_PATH='~'
+
+usage() {
+cat << _EOH_
+
+remsetup -- A SHELL script to manage initialising a git repo in the current directory and then using the name of the root directory as the REMOTE url and initialise a bare repo at REMOTE.
+
+USAGE: $(basename $0) [-s | -l] <-d> [<-h host> <-p port> <-u user> | <-a alias>]
+
+ARGUMENTS:
+  
+  -s    Remote repo over SSH
+  -l    Remote repo in local system
+  -d    Dry run the script to check if all steps are correct
+  -h    SSH HOST to be used with PORT and USER
+  -p    SSH PORT to be used with HOST and USER
+  -u    SSH USER to be used with HOST and PORT
+  -a    SSH ALIAS to be used instead of HOST, PORT and USER"
+
+_EOH_
+}
+
+while getopts ":dh:lp:su:a:" opt; do
+  case $opt in
+    d)
+      DRYRUN=true
+      ;;
+    h)
+      HOST=$OPTARG
+      ;;
+    l)
+      LOCAL=true
+      ;;
+    p)
+      PORT=$OPTARG
+      ;;
+    s)
+      SSH=true
+      ;;
+    u)
+      USER=$OPTARG
+      ;;
+    a)
+      ALIAS=$OPTARG
+      ;;
+    \?)
+      echo "Invalid option: -$OPTARG" >&2
+      usage
+      exit 1
+      ;;
+  esac
+done
+
+if $SSH && $LOCAL ; then
+   echo "Conflicting options, both SSH, AND LOCAL defined"
+   usage
+   exit 1
+fi
+if ! $SSH && ! $LOCAL ; then
+   echo "Conflicting options, NEITHER SSH, nor LOCAL defined"
+   usage
+   exit 1
+fi
+if [[ ( ! -z $USER || ! -z $HOST ) && ! -z $ALIAS ]]; then
+   echo "Conflicting options, ALIAS is defined however either USER AND HOST is defined."
+   usage
+   exit 1
+fi
+
+if [[ ! -z $USER && ! -z $HOST && ! -z $PORT ]]; then
+  SSHCMD="$USER@$HOST -p $PORT"
+  SSHURL="$USER@$HOST:$PORT"
+elif [[ ! -z $ALIAS ]]; then
+  SSHCMD=$ALIAS
+  SSHURL="$ALIAS:"
+else
+  echo "Missing options either USER, HOST and PORT, or ALIAS"
+  usage
+  exit 1
+fi
+
+if $DRYRUN; then
+   echo " ------------------ DRY RUN -------------------"
+fi
+
+if $LOCAL; then
+   GIT_PATH="$HOME_PATH/$GIT_PATH"
+fi
+
+# Check if in a git repo
+if git rev-parse --git-dir > /dev/null 2>&1; then
+  # This is a valid git repository (but the current working
+  # directory may not be the top level.
+  # Check the output of the git rev-parse command if you care)
+  echo 'Current directory already a git repo'
+  AREPO=true
+else
+  # this is not a git repository
+  AREPO=false
+fi
+
+# Name of repo either from git rev-parse or Bash param/regex extraction
+if $AREPO; then
+  REPO="$(basename "$(git rev-parse --git-dir)")"
+  if [[ "$REPO" = ".git" ]] ; then
+    REPO="$(basename "$(git rev-parse --show-toplevel)")".git
+  fi
+  echo $REPO
+else
+  REPO=${PWD##*/}.git
+fi
+
+# Create remote path
+if $SSH; then
+   GIT_REMOTE_SERVER_PATH=$SSHURL/~/$GIT_PATH/$REPO
+   GIT_REMOTE_URL=ssh://$GIT_REMOTE_SERVER_PATH
+elif $LOCAL; then
+   GIT_REMOTE_URL=$GIT_PATH/$REPO
+   GIT_REMOTE_SERVER_PATH=$GIT_PATH/$REPO
+fi
+
+echo "-------------------------------------------"
+echo "------ Building New Git Repository --------"
+echo "-------------------------------------------"
+
+# Setup remote repo
+
+echo "--"
+echo "-- Creating bare remote repo at:"
+echo "-- $GIT_REMOTE_SERVER_PATH"
+echo "--"
+
+#Original command makes repo accessible via a server
+#ssh $USER@$HOST 'mkdir '$GIT_PATH'/'$REPO' && cd '$GIT_PATH'/'$REPO' && git --bare init && git --bare update-server-info && cp hooks/post-update.sample hooks/post-update && chmod a+x hooks/post-update && touch git-daemon-export-ok'
+
+RET=1
+if ! $DRYRUN; then
+   if $SSH; then
+      ssh $SSHCMD "mkdir $GIT_PATH/$REPO && cd $GIT_PATH/$REPO && git --bare init"
+      RET=$?
+   elif $LOCAL; then
+      CURRDIR=`pwd`
+      mkdir $GIT_PATH/$REPO && cd $GIT_PATH/$REPO && git --bare init
+      RET=$?
+      cd $CURRDIR
+   fi
+fi
+
+if $DRYRUN; then
+   RET=0
+fi
+
+if [ $RET -eq 0 ]; then
+
+   # Configure local repo
+
+   echo "--"
+   echo "-- Initializing local repo & pushing to remote"
+   echo "--"
+
+   if ! $DRYRUN; then
+      if ! $AREPO; then
+         touch .gitignore
+         git init
+         git add .
+         git commit -m 'initial commit'
+      fi
+      git remote add origin $GIT_REMOTE_URL
+      git push -u origin master
+      #git config branch.master.remote origin
+      #git config branch.master.merge refs/heads/master
+      git fetch
+      git merge master
+      git branch -a
+   fi
+
+   echo "--"
+   echo "-- Your new git repo $REPO is ready and initialized at:"
+   echo "-- $GIT_REMOTE_SERVER_PATH"
+   echo "--"
+else
+   echo "Failed to create remote git repository"
+fi
+
+

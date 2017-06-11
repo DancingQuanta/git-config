@@ -1,0 +1,14 @@
+#!/bin/sh
+
+if [[ branch=$(git symbolic-ref --short -q HEAD) ]]; then
+  if [[ $branch == 'master' ]]; then
+    echo "Already on branch master, checkout any branch to rebase on master"
+  else
+    git checkout master
+    git pull
+    git checkout - 
+    git rebase master
+  fi
+else
+  echo "not on any branch"
+fi
