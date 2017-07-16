@@ -182,7 +182,7 @@
 	default = matching
 
 [url "git@github.com:"]
-	insteadof = github:
+	insteadOf = https://github.com/
 
 [commit]
 	gpgsign = true
