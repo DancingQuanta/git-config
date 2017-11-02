@@ -1,9 +1,0 @@
-*
-!/.gitattributes
-!/.gitconfig
-!/.gitignore
-!/.gitignore.d/git
-!/.local/
-!/.local/bin/
-!/.local/bin/difftool
-!/.local/bin/git-*

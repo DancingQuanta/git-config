@@ -1,0 +1,16 @@
+*
+!/.gitignore.d/
+!/.gitignore.d/git-config
+!/.config
+!/.config/mr
+!/.config/mr/available.d
+!/.config/mr/available.d/git-config.vcsh
+!/.config/mr/config.d
+!/.config/mr/config.d/git-config.vcsh
+!/.gitattributes
+!/.gitconfig
+!/.gitignore
+!/.local/
+!/.local/bin/
+!/.local/bin/difftool
+!/.local/bin/git-*
