@@ -3,6 +3,7 @@
 !/.gitconfig
 !/.gitignore
 !/.gitignore.d/git
-!/bin/
-!/bin/difftool
-!/bin/git-*
+!/.local/
+!/.local/bin/
+!/.local/bin/difftool
+!/.local/bin/git-*
