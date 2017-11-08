@@ -14,3 +14,7 @@
 !/.local/bin/
 !/.local/bin/difftool
 !/.local/bin/git-*
+!/.config/shell/
+!/.config/shell/config-local.d/
+!/.config/shell/config-local.d/git.sh
+
