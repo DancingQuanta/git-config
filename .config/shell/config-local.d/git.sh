@@ -5,7 +5,7 @@
 
 # Alias the `git` command to the `hub` command.
 # http://github.com/github/hub
-[ -x $(command -v hub) ] && eval "$(hub alias -s)"
+[ -x "$(command -v hub)" ] && eval "$(hub alias -s)"
 
 # Alias
 
