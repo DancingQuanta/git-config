@@ -190,9 +190,6 @@
 [url "git@github.com:"]
 	pushInsteadOf = "https://github.com/"
 
-[commit]
-	gpgsign = true
-
 [include]
 	path = .gitconfig.private
 	path = .gitconfig.local
