@@ -1,1 +1,8 @@
-../available.d/git-config.vcsh
+## DancingQuanta/git-config - https://github.com/DancingQuanta/git-config
+## git-config.git
+## Setup DancingQuanta/git-config and dependant repositories
+
+### MAIN REPOSITORY - cloned via vcsh
+
+[$HOME/.config/vcsh/repo.d/git-config.git]
+checkout = vcsh clone https://github.com/DancingQuanta/git-config
