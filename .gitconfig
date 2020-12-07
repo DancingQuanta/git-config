@@ -177,6 +177,7 @@
 	# list aliases
 	aliases = "!git config -l | grep alias | cut -c 7-"
 	conflicts = diff --name-only --diff-filter=U
+	fixup = !GIT_SEQUENCE_EDITOR=true git rebase -i --autosquash
 	
 		
 [push]
@@ -193,3 +194,5 @@
 [include]
 	path = .gitconfig.private
 	path = .gitconfig.local
+[rebase]
+	autoStash = true
