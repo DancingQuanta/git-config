@@ -56,7 +56,7 @@
 [difftool "difftool"]
 	cmd = ~/bin/difftool $LOCAL $REMOTE
 	trustExitCode = false
-	
+
 [difftool]
 	prompt = false
 
@@ -67,7 +67,7 @@
 	cmd = ~/bin/difftool $BASE $LOCAL $REMOTE $MERGED
 	keepBackup = false
 	trustExitCode = false
-	
+
 [mergetool]
 	prompt = false
 
@@ -105,11 +105,11 @@
 	rc  = rebase --continue
 	ri  = rebase --interactive
 	rs  = rebase --skip
-	rom = rebase origin/master	
-	
+	rom = rebase origin/master
+
 	# clone
-	sclone = clone --depth=1
-	
+	sclone = clone --depth=1 # Shadow clone
+
 	# commit
 	in = commit --verbose
 	ina = commit -a --verbose
@@ -117,22 +117,22 @@
 	inam = commit -a --verbose -m
 	amend = commit --amend --verbose --reedit-message HEAD
 	rename = commit --amend --verbose
-	join = commit --amend -C HEAD
-	joina = commit -a --amend -C HEAD
+	join = commit --amend -C HEAD # Add code in index to HEAD
+	joina = commit -a --amend -C HEAD # Add changes in working to HEAD
 	undo  = reset --soft "HEAD^" # Undo your last commit, but don't throw away your changes
 	undoh  = reset --hard "HEAD^" # Undo your last commit, and throw away your changes
 	refresh = reset --hard HEAD # Throw away any changes
-	cp	 = cherry-pick
+	cp = cherry-pick
 
 	# diff
-	d	= diff --color --color-words --abbrev				# Diff working dir to index
-	ds	= diff --color --color-words --abbrev --staged	# Diff index to HEAD
-	dh	= diff --color --color-words --abbrev HEAD		# Diff working dir and index to HEAD
-	
+	d = diff --color --color-words --abbrev		  # Diff working dir to index
+	ds = diff --color --color-words --abbrev --staged # Diff index to HEAD
+	dh = diff --color --color-words --abbrev HEAD	  # Diff working dir and index to HEAD
+
 	xd = difftool -t difftool
 	xds = difftool -t difftool --staged
 	xdh = difftool -t difftool HEAD
-	
+
 	# index
 	s  = status -s
 	a  ="!git add $@ && git status -s"
@@ -151,20 +151,15 @@
 
 	lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) %C(dim white)- %an%C(reset)%C(bold yellow)%d%C(reset)' --all
 	lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''		  %C(white)%s%C(reset) %C(dim white)- %an%C(reset)' --all
-	
-	# stash
-  ss = stash                        # stash changes
-  sl = stash list                   # list stashes
-  sa = stash apply                  # apply stash (restore changes)
-  sd = stash drop                   # drop stashes (destory changes)
 
-  # subtree
-  # the acronym stands for "subtree add"
-  # git sba <repo uri> <dest folder> 
-  sba = "!f() { git subtree add --prefix $2 $1 master --squash; }; f"
-  # the acronym stands for "subtree update"
-  # git sbu <repo uri> <dest folder> 
-  sbu = "!f() { git subtree pull --prefix $2 $1 master --squash; }; f"
+	# When was the file added?
+	whenadded = log --diff-filter=A
+
+	# stash
+	ss = stash                        # stash changes
+	sl = stash list                   # list stashes
+	sa = stash apply                  # apply stash (restore changes)
+	sd = stash drop                   # drop stashes (destory changes)
 
 	# remote
 	re  = remote
@@ -173,16 +168,14 @@
 	rex = remote rm
 	rem = remote rename
 
-  find = "!git log --reverse --color -p -S "
-
-  whenadded = log --diff-filter=A
+	# Find in commits
+	find = "!git log --reverse --color -p -S "
 
 	# list aliases
 	aliases = "!git config -l | grep alias | cut -c 7-"
 	conflicts = diff --name-only --diff-filter=U
 	fixup = !GIT_SEQUENCE_EDITOR=true git rebase -i --autosquash
-	
-		
+
 [push]
 	default = matching
 
